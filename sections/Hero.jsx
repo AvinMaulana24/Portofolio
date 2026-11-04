@@ -2,23 +2,35 @@ import {useEffect,useRef} from 'react'
 import {gsap} from 'gsap';import {ScrollTrigger} from 'gsap/ScrollTrigger'
 import {motion} from 'framer-motion'
 import {Download} from 'lucide-react'
-import {Particles,SplitText,Magnetic,Scramble} from '../components/ui'
+import {SplitText,Magnetic} from '../components/ui'
 import {P} from '../data'
 gsap.registerPlugin(ScrollTrigger)
-export default function Hero(){const r=useRef()
+function Paint(){const c=useRef()
 useEffect(()=>{if(matchMedia('(prefers-reduced-motion:reduce)').matches)return
-let mm;const c=gsap.context(()=>{const st={trigger:'#home',start:'top top',end:'bottom top',scrub:true}
-gsap.to('.geo',{yPercent:-45,ease:'none',scrollTrigger:st});gsap.to('.ghost',{xPercent:-25,ease:'none',scrollTrigger:st});mm=e=>gsap.to('.geo-wrap',{rotationY:(e.clientX/innerWidth-.5)*50,rotationX:-(e.clientY/innerHeight-.5)*50,duration:1});addEventListener('mousemove',mm);gsap.to('.hero-txt',{yPercent:12,opacity:.15,ease:'none',scrollTrigger:st})},r);return()=>{c.revert();removeEventListener('mousemove',mm)}},[])
-const D=1.5
-return <section id="home" ref={r} className="relative flex min-h-screen items-center overflow-hidden"><Particles/><div aria-hidden className="ghost text-outline pointer-events-none absolute -bottom-[3vw] left-0 select-none whitespace-nowrap font-display text-[24vw] leading-none opacity-50">DEVELOPER</div>
-<div className="geo absolute right-[6%] top-1/3 hidden opacity-80 md:block"><div className="geo-wrap"><div className="cube"><i/><i/><i/><i/><i/><i/><div className="cube sm"><i/><i/><i/><i/><i/><i/></div></div></div></div>
-<div className="hero-txt relative mx-auto w-full max-w-7xl px-6 pb-24 pt-36 md:px-10">
-<motion.p initial={{opacity:0}} animate={{opacity:1}} transition={{delay:D}} className="mb-8 flex items-center gap-3 text-xs tracking-[.2em] text-mute"><span className="h-2 w-2 animate-pulse rounded-full bg-accent"/>AVAILABLE FOR OPPORTUNITIES</motion.p>
-<h1 className="max-w-5xl font-display text-[clamp(2.8rem,8.5vw,8rem)] font-medium leading-[.95] tracking-tight"><SplitText text="Building Digital Experiences Through Code." delay={D}/></h1>
-<div className="mt-14 grid gap-10 md:grid-cols-12"><motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{delay:D+.9}} className="md:col-span-4"><p className="font-display text-2xl">{P.name}</p><p className="mt-1 text-mute"><Scramble text="Software Developer / Creative Programmer" delay={D+1}/></p></motion.div>
-<motion.p initial={{opacity:0}} animate={{opacity:1}} transition={{delay:D+1.1}} className="max-w-md text-mute md:col-span-5 md:col-start-6">Saya adalah lulusan Rekayasa Perangkat Lunak yang memiliki ketertarikan dalam membangun aplikasi, mengembangkan solusi digital, dan menciptakan pengalaman pengguna melalui teknologi.</motion.p></div>
-<motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{delay:D+1.3}} className="mt-12 flex flex-wrap items-center gap-4">
-<Magnetic><a href="#projects" className="block rounded-full bg-accent px-7 py-3.5 text-sm font-medium text-bg">Explore My Work</a></Magnetic>
-<Magnetic><a href="./cv.pdf" download className="flex items-center gap-2 rounded-full border border-line px-7 py-3.5 text-sm hover:border-accent"><Download size={16}/>Download CV</a></Magnetic>
-<Magnetic><a href="#contact" className="block px-5 py-3.5 text-sm text-mute hover:text-ink">Contact Me</a></Magnetic></motion.div></div>
-<div aria-hidden className="absolute bottom-0 left-1/2 h-16 w-px overflow-hidden bg-line"><div className="drop h-full w-full bg-accent"/></div></section>}
+const cv=c.current,g=cv.getContext('2d'),pts=[],K=['#141414','#E8452C','#0E1799'];let w,h,raf,last=-1e4,pm={x:0,y:0},ci=0,lp=null
+const rs=()=>{w=cv.width=cv.offsetWidth;h=cv.height=cv.offsetHeight};rs()
+const mv=e=>{const b=cv.getBoundingClientRect();pm={x:e.clientX-b.left,y:e.clientY-b.top};last=performance.now()}
+const tick=t=>{const p=t-last<2500?pm:{x:w*(.5+.38*Math.sin(t/1700)),y:h*(.5+.3*Math.sin(t/1100+1))}
+if(!lp||Math.hypot(p.x-lp.x,p.y-lp.y)>6){if(Math.random()<.05)ci=(ci+1)%3;pts.push({x:p.x,y:p.y,t,c:K[ci]});lp=p;if(pts.length>90)pts.shift()}
+g.clearRect(0,0,w,h);g.lineCap='round'
+for(let i=1;i<pts.length;i++){const a=pts[i-1],b=pts[i],age=(t-b.t)/2200;if(age>1)continue
+g.strokeStyle=b.c;g.globalAlpha=(1-age)*.9;g.lineWidth=14+Math.min(60,Math.hypot(b.x-a.x,b.y-a.y)*1.2)*(1-age);g.beginPath();g.moveTo(a.x,a.y);g.lineTo(b.x,b.y);g.stroke()}
+raf=requestAnimationFrame(tick)}
+raf=requestAnimationFrame(tick);addEventListener('pointermove',mv);addEventListener('resize',rs)
+return()=>{cancelAnimationFrame(raf);removeEventListener('pointermove',mv);removeEventListener('resize',rs)}},[])
+return <canvas ref={c} aria-hidden className="absolute inset-0 h-full w-full"/>}
+export default function Hero(){const r=useRef(),D=1.4,f=d=>({initial:{opacity:0},animate:{opacity:1},transition:{delay:D+d}})
+useEffect(()=>{if(matchMedia('(prefers-reduced-motion:reduce)').matches)return
+const c=gsap.context(()=>{gsap.to('.sun',{yPercent:-35,ease:'none',scrollTrigger:{trigger:'#home',start:'top top',end:'bottom top',scrub:true}})},r);return()=>c.revert()},[])
+const dot="grid place-items-center rounded-full text-center font-display font-bold leading-tight"
+return <section id="home" ref={r} className="relative flex min-h-screen flex-col justify-between overflow-hidden bg-accent px-6 pb-10 pt-32 text-bg md:pl-24 md:pr-10">
+<div aria-hidden className="sun pointer-events-none absolute -right-24 top-24 h-[26rem] w-[26rem] rounded-full bg-sun"/><Paint/>
+<p aria-hidden className="absolute bottom-10 left-5 hidden rotate-180 font-display text-3xl font-bold [writing-mode:vertical-rl] md:block">{P.name}</p>
+<div className="relative"><motion.p {...f(0)} className="mb-8 inline-flex items-center gap-2 rounded-full border border-bg/40 px-4 py-1.5 text-sm"><span className="h-2 w-2 rounded-full bg-sun"/>AVAILABLE FOR OPPORTUNITIES</motion.p>
+<h1 className="font-display text-[clamp(2.8rem,9vw,8.5rem)] font-extrabold leading-[.88] tracking-tight"><span className="block"><SplitText text="Building" delay={D}/></span><span className="block md:ml-[12%]"><SplitText text="Digital Experiences" delay={D+.2}/></span><span className="block md:ml-[34%]"><SplitText text="Through Code." delay={D+.5}/></span></h1></div>
+<div className="relative mt-16 flex flex-col items-start justify-between gap-10 md:flex-row md:items-end">
+<motion.div {...f(.9)} className="max-w-xs -rotate-2 bg-white p-5 text-ink shadow-2xl"><p className="font-display text-xl font-bold">{P.name}</p><p className="text-sm text-mute">Software Developer / Creative Programmer</p><p className="mt-3 text-sm">Saya adalah lulusan Rekayasa Perangkat Lunak yang memiliki ketertarikan dalam membangun aplikasi, mengembangkan solusi digital, dan menciptakan pengalaman pengguna melalui teknologi.</p></motion.div>
+<motion.div {...f(1.2)} className="flex items-end gap-3">
+<Magnetic><a href="#projects" className={`${dot} h-40 w-40 bg-sun text-ink`}>Explore<br/>My Work</a></Magnetic>
+<Magnetic><a href="./cv.pdf" download className={`${dot} mb-10 h-28 w-28 bg-ink text-bg`}><span><Download size={16} className="mx-auto mb-1"/>Download CV</span></a></Magnetic>
+<Magnetic><a href="#contact" className={`${dot} h-24 w-24 border border-bg/70`}>Contact<br/>Me</a></Magnetic></motion.div></div></section>}

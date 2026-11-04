@@ -1,16 +1,7 @@
 @tailwind base;@tailwind components;@tailwind utilities;
-html{background:#08090D;scroll-behavior:smooth}
+html{background:#ECEAE4;scroll-behavior:smooth}
 body{@apply bg-bg text-ink font-sans antialiased;overflow-x:hidden}
-body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:70;opacity:.05;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-:focus-visible{outline:2px solid #22D3EE;outline-offset:3px}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:70;opacity:.07;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+:focus-visible{outline:2px solid #E8452C;outline-offset:3px}
 @media (hover:hover) and (pointer:fine){*{cursor:none!important}}
-.geo-wrap{perspective:900px}
-.cube{position:relative;width:180px;height:180px;transform-style:preserve-3d;animation:spin 28s linear infinite}
-.cube i{position:absolute;inset:0;border:1px solid rgba(34,211,238,.45);background:rgba(34,211,238,.03)}
-.cube i:nth-child(1){transform:translateZ(90px)}.cube i:nth-child(2){transform:rotateY(180deg) translateZ(90px)}
-.cube i:nth-child(3){transform:rotateY(90deg) translateZ(90px)}.cube i:nth-child(4){transform:rotateY(-90deg) translateZ(90px)}
-.cube i:nth-child(5){transform:rotateX(90deg) translateZ(90px)}.cube i:nth-child(6){transform:rotateX(-90deg) translateZ(90px)}
-@keyframes spin{to{transform:rotateX(360deg) rotateY(360deg)}}
-@keyframes drop{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
-.drop{animation:drop 2.2s ease-in-out infinite}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
