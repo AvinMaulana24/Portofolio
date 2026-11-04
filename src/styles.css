@@ -74,13 +74,13 @@ header{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));left:0;right
 .big{background:var(--surf);border-radius:70px 30px 70px 30px;padding:14px;box-shadow:14px 14px 34px var(--shd);position:relative}
 .shot{aspect-ratio:16/10;border-radius:58px 20px 58px 20px;overflow:hidden;transition:transform .6s;display:grid;place-items:center;color:#fff;font:800 clamp(28px,4vw,52px) Syne,sans-serif;position:relative}
 .big:hover .shot{transform:scale(1.03) rotate(-.6deg)}
-.shot em{position:absolute;right:20px;bottom:14px;font:700 12px "Plus Jakarta Sans";opacity:.8;font-style:normal;letter-spacing:.2em}
+.shot em{position:absolute;right:20px;bottom:14px;font:700 12px "Plus Jakarta Sans",system-ui,sans-serif;opacity:.8;font-style:normal;letter-spacing:.2em}
 .info{padding:18px 14px 8px;color:var(--tx)}
 .info h3{font-size:26px}.info p{color:var(--tx2);margin:6px 0 12px}
 .tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.tags span{padding:5px 12px;border-radius:999px;background:var(--p2);color:#fff;font-size:12px;font-weight:700}
 .vp{font-weight:700;border-bottom:2px solid var(--p1)}
 .side{display:grid;gap:18px}
-.th{display:flex;align-items:center;gap:14px;padding:12px;border-radius:30px;border:0;background:var(--p1);color:#fff;cursor:pointer;text-align:left;font:700 15px "Plus Jakarta Sans";box-shadow:8px 8px 18px var(--shd),-6px -6px 14px var(--shl);transition:transform .3s}
+.th{display:flex;align-items:center;gap:14px;padding:12px;border-radius:30px;border:0;background:var(--p1);color:#fff;cursor:pointer;text-align:left;font:700 15px "Plus Jakarta Sans",system-ui,sans-serif;box-shadow:8px 8px 18px var(--shd),-6px -6px 14px var(--shl);transition:transform .3s}
 .th:nth-child(2){margin-left:26px}.th:hover,.th.on{transform:translateX(-8px);background:var(--deep)}
 .th i{width:64px;height:64px;border-radius:22px;flex:none}
 .nv{display:flex;gap:12px;margin-top:6px}.nv .ic{width:52px;height:52px;background:var(--deep);color:#fff}
@@ -97,7 +97,7 @@ header{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));left:0;right
 .contact{display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center}
 .contact p.d{color:var(--surf);margin-bottom:22px}
 form{display:grid;gap:14px}
-input,textarea{width:100%;padding:16px 20px;border:0;border-radius:24px;background:var(--surf);color:var(--tx);font:500 15px "Plus Jakarta Sans";box-shadow:inset 5px 5px 12px var(--shd),inset -4px -4px 10px var(--shl)}
+input,textarea{width:100%;padding:16px 20px;border:0;border-radius:24px;background:var(--surf);color:var(--tx);font:500 15px "Plus Jakarta Sans",system-ui,sans-serif;box-shadow:inset 5px 5px 12px var(--shd),inset -4px -4px 10px var(--shl)}
 input::placeholder,textarea::placeholder{color:var(--tx2)}
 .r2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 #ok{color:#fff;font-weight:700;min-height:24px}
@@ -139,4 +139,17 @@ section{padding:18px 0}
 .stage .glass{transform:scale(.8)}
 header{padding:0 10px}.nav{padding:6px 8px 6px 14px}.logo{font-size:15px}
 .btns .btn{padding:12px 20px;font-size:14px}
+}
+
+.cube{max-width:340px;margin:auto}
+input,textarea,button{font-family:"Plus Jakarta Sans",system-ui,sans-serif}
+@media(max-width:860px){.th:hover,.th.on{transform:none}}
+@media(max-width:600px){
+.cube{max-width:210px}
+.quote small{display:block;text-align:center;border-radius:20px;line-height:1.4}
+.ft{flex-direction:column;text-align:center;gap:14px}.ft nav{justify-content:center}
+footer{padding:24px 0 40px}
+.th{padding:10px}.th i{width:52px;height:52px;border-radius:18px}
+.info h3{font-size:22px}
+.tile{padding:16px 8px}
 }

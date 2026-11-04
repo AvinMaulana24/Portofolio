@@ -165,7 +165,7 @@ function About() {
           <p>I’m a Software Engineering graduate who loves turning rough ideas into polished apps, games and web products.</p>
           <p>My philosophy: learn in public, ship small, refine forever.</p></div>
         <div className="frame">
-          <motion.div className="in" initial={{ clipPath: 'inset(100% 0 0 0)' }} whileInView={{ clipPath: 'inset(0% 0 0 0)' }} viewport={{ once: true }} transition={{ duration: 1.1, ease: [0.7, 0, 0.2, 1] }}>
+          <motion.div className="in" initial={{ clipPath: 'inset(100% -30% -30% -30%)' }} whileInView={{ clipPath: 'inset(-20% -30% -30% -30%)' }} viewport={{ once: true }} transition={{ duration: 1.1, ease: [0.7, 0, 0.2, 1] }}>
             <svg viewBox="0 0 200 250" width="80%" aria-label="Portrait placeholder"><circle cx="100" cy="92" r="46" fill="#39326D" /><path d="M20 250 q10 -100 80 -100 q70 0 80 100z" fill="#8880D6" /><rect x="62" y="82" width="76" height="26" rx="13" fill="#DCD7FF" opacity=".9" /></svg>
           </motion.div>
         </div>
@@ -264,7 +264,7 @@ function Contact() {
             <div><Mag as="button" className="dark" type="submit">Send Message <Send size={16} /></Mag></div>
             <AnimatePresence>{sent && <motion.div id="ok" role="status" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>Thanks! Connect a form service (Formspree, EmailJS) to deliver messages.</motion.div>}</AnimatePresence>
           </form></div>
-        <div className="stage" style={{ maxWidth: 340, margin: 'auto' }}>
+        <div className="stage cube">
           <svg viewBox="0 0 300 300" aria-hidden="true"><defs><linearGradient id="g4" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#DCD7FF" /><stop offset="1" stopColor="#8880D6" /></linearGradient></defs>
             <g className="fl2"><path d="M150 40 L250 100 L250 200 L150 260 L50 200 L50 100Z" fill="url(#g4)" /><path d="M150 40 L250 100 L150 160 L50 100Z" fill="#fff" opacity=".55" /><path d="M150 160 L250 100 L250 200 L150 260Z" fill="#39326D" opacity=".75" />
               <text x="104" y="190" fontFamily="Syne" fontWeight="800" fontSize="44" fill="#DCD7FF" transform="rotate(-6 104 190)">&lt;/&gt;</text></g></svg>
