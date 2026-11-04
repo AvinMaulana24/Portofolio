@@ -153,3 +153,12 @@ footer{padding:24px 0 40px}
 .info h3{font-size:22px}
 .tile{padding:16px 8px}
 }
+
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+.links .cvm{display:none}
+@media(max-width:960px){
+.links{max-height:calc(100vh - 100px);max-height:calc(100dvh - 100px);overflow-y:auto;gap:4px}
+.links a{padding:14px 18px;min-height:48px;display:flex;align-items:center}
+.links .cvm{display:flex;gap:8px;margin-top:6px;background:var(--surf);color:var(--tx);font-weight:700;justify-content:center;box-shadow:5px 5px 12px var(--shd),-4px -4px 10px var(--shl)}
+.ic{width:46px;height:46px}
+}

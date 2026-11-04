@@ -6,6 +6,7 @@ import { Moon, Sun, Menu, X, ArrowRight, ArrowLeft, ArrowUp, ArrowUpRight, Downl
 gsap.registerPlugin(ScrollTrigger)
 
 const EASE = [0.2, 0.8, 0.2, 1]
+const CV = import.meta.env.BASE_URL + 'cv.pdf'
 const NAV = ['Home', 'About', 'Skills', 'Projects', 'Journey', 'Contact']
 const TECH = [['JavaScript','JS','#d9a800'],['Python','Py','#3776ab'],['PHP','php','#777bb3'],['Java','Jv','#e76f00'],['React','⚛','#149eca'],['Flutter','Fl','#02569b'],['Laravel','L','#ff2d20'],['Firebase','Fb','#f57c00'],['Supabase','Sb','#2f9e6e'],['MySQL','SQL','#00618a'],['Git','Git','#f05033'],['GitHub','GH','#24292f']]
 const PROJECTS = [
@@ -84,19 +85,31 @@ function Nav({ dark, toggle }) {
     document.querySelectorAll('main section').forEach((s) => io.observe(s))
     return () => io.disconnect()
   }, [])
+  const ref = useRef()
+  useEffect(() => {
+    if (!open) return
+    const y0 = scrollY
+    const close = () => setOpen(false)
+    const out = (e) => { if (!ref.current?.contains(e.target)) close() }
+    const key = (e) => e.key === 'Escape' && close()
+    const sc = () => Math.abs(scrollY - y0) > 40 && close()
+    document.addEventListener('pointerdown', out); addEventListener('keydown', key); addEventListener('scroll', sc, { passive: true })
+    return () => { document.removeEventListener('pointerdown', out); removeEventListener('keydown', key); removeEventListener('scroll', sc) }
+  }, [open])
   return (
     <header>
-      <motion.div className="nav neo" initial={{ y: -90, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 1.7, type: 'spring', stiffness: 90 }}>
+      <motion.div ref={ref} className="nav neo" initial={{ y: -90, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 1.7, type: 'spring', stiffness: 90 }}>
         <a className="logo" href="#home"><i>{'{ }'}</i>Your Name</a>
         <nav className={'links' + (open ? ' open' : '')} aria-label="Main">
           {NAV.map((n) => { const id = n.toLowerCase(); return (
             <a key={id} href={'#' + id} className={on === id ? 'on' : ''} onClick={() => setOpen(false)}>
               {on === id && <motion.span layoutId="pill" className="pill2" transition={{ type: 'spring', stiffness: 380, damping: 30 }} />}{n}
             </a>) })}
+          <a className="cvm" href={CV} download onClick={() => setOpen(false)}><Download size={16} />Download CV</a>
         </nav>
         <div className="right">
           <button className="ic" onClick={toggle} aria-label="Switch theme">{dark ? <Sun size={18} /> : <Moon size={18} />}</button>
-          <Mag className="cv" href="/cv.pdf" download><Download size={16} />Download CV</Mag>
+          <Mag className="cv" href={CV} download><Download size={16} />Download CV</Mag>
           <button className="ic burger" aria-label="Menu" aria-expanded={open} onClick={() => setOpen(!open)}>{open ? <X size={18} /> : <Menu size={18} />}</button>
         </div>
       </motion.div>
@@ -127,7 +140,7 @@ function Hero({ go }) {
           <motion.p className="d" {...fade(1.4)}>Saya merupakan lulusan Rekayasa Perangkat Lunak yang memiliki ketertarikan dalam membangun aplikasi, mengembangkan teknologi, dan menciptakan solusi digital yang inovatif.</motion.p>
           <motion.div className="btns" {...fade(1.55)}>
             <Mag className="dark" href="#projects">Explore My Work <ArrowRight size={16} /></Mag>
-            <Mag href="/cv.pdf" download>Download CV</Mag>
+            <Mag href={CV} download>Download CV</Mag>
           </motion.div>
         </div>
         <Tilt className="stage" max={8}>
