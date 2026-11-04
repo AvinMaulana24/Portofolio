@@ -1,1 +1,1 @@
-export default {content:['./index.html','./src/**/*.{js,jsx}'],theme:{extend:{colors:{bg:'#ECEAE4',bg2:'#DFDCD3',ink:'#141414',mute:'#5E5C57',accent:'#1C2BD9',sun:'#FFC21A',verm:'#E8452C',line:'rgba(20,20,20,.16)'},fontFamily:{display:['Syne','sans-serif'],sans:['"Hanken Grotesk"','sans-serif']}}},plugins:[]}
+export default { content: ['./index.html', './src/**/*.{js,jsx}'], corePlugins: { preflight: false }, theme: { extend: {} } }
