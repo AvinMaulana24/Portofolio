@@ -1,0 +1,165 @@
+.neural-nav {
+  position: fixed;
+  top: 1.25rem;
+  left: 1.5rem;
+  right: 1.5rem;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.75rem;
+  background: rgba(98, 94, 145, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(220, 215, 255, 0.15);
+  border-radius: 999px;
+  box-shadow:
+    12px 12px 30px rgba(41, 38, 77, 0.25),
+    -8px -8px 24px rgba(164, 155, 238, 0.15);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.neural-nav.compact {
+  top: 0.75rem;
+  left: 2rem;
+  right: 2rem;
+  padding: 0.6rem 1.5rem;
+  background: rgba(57, 50, 109, 0.85);
+  border-color: rgba(136, 128, 214, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.neural-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: "Syne", sans-serif;
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: #dcd7ff;
+  text-decoration: none;
+}
+
+.neural-logo-icon {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  background: #39326d;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  color: #dcd7ff;
+  box-shadow:
+    inset 2px 2px 5px rgba(255, 255, 255, 0.15),
+    4px 4px 10px rgba(41, 38, 77, 0.4);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.neural-logo:hover .neural-logo-icon {
+  transform: rotate(90deg) scale(1.05);
+  color: #ffc21a;
+}
+
+/* Navigasi Desktop disembunyikan di bawah 1024px */
+.neural-links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.neural-link-item {
+  position: relative;
+}
+
+.neural-link {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: rgba(220, 215, 255, 0.7);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.neural-link:hover,
+.neural-link.active {
+  color: #ffffff;
+}
+
+.neural-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.neural-cta {
+  background: #dcd7ff;
+  color: #29264d;
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  box-shadow: 4px 4px 12px rgba(41, 38, 77, 0.2);
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.neural-cta:hover {
+  background: #ffffff;
+  transform: translateY(-2px);
+}
+
+/* Tombol Hamburger Default (Tersembunyi di Desktop) */
+.mobile-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: #39326d;
+  color: #dcd7ff;
+  border: 1px solid rgba(220, 215, 255, 0.2);
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
+}
+
+.mobile-toggle:active {
+  transform: scale(0.95);
+}
+
+/* RESPONSIF UNTUK TABLET & MOBILE (<= 1024px) */
+@media (max-width: 1024px) {
+  .neural-links,
+  .neural-cta {
+    display: none !important;
+  }
+
+  .mobile-toggle {
+    display: flex !important;
+  }
+
+  .neural-nav {
+    left: 1rem;
+    right: 1rem;
+    padding: 0.65rem 1.25rem;
+    top: 1rem;
+  }
+
+  .neural-nav.compact {
+    left: 0.75rem;
+    right: 0.75rem;
+    top: 0.5rem;
+    padding: 0.5rem 1rem;
+  }
+}
