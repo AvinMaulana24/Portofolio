@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, lazy, Suspense } from "react";
 import { createPortal } from "react-dom";
 import {
   motion,
@@ -23,6 +23,7 @@ import {
 import Navbar from "./components/Navbar";
 gsap.registerPlugin(ScrollTrigger);
 
+const Scene3D = lazy(() => import("./three/Scene3D"));
 const EASE = [0.2, 0.8, 0.2, 1];
 const CV = import.meta.env.BASE_URL + "cv.pdf";
 const TECH = [
@@ -545,6 +546,13 @@ function Projects() {
   const [i, setI] = useState(0),
     p = PROJECTS[i],
     L = PROJECTS.length;
+
+  const go = (n, dir) => {
+    setI(n);
+    window.dispatchEvent(
+      new CustomEvent("scene3d:project", { detail: { dir } }),
+    );
+  };
   return (
     <section id="projects">
       <R className="panel alt shape shape-projects p-8 md:p-12">
@@ -605,7 +613,7 @@ function Projects() {
               <motion.button
                 key={q.t}
                 className={"th" + (k === i ? " on" : "")}
-                onClick={() => setI(k)}
+                onClick={() => go(k, k > i ? 1 : -1)}
                 whileTap={{ scale: 0.96 }}
               >
                 <i
@@ -623,7 +631,7 @@ function Projects() {
             as="button"
             className="ic"
             aria-label="Previous project"
-            onClick={() => setI((i + L - 1) % L)}
+            onClick={() => go((i + L - 1) % L, -1)}
           >
             <ArrowLeft size={20} />
           </Mag>
@@ -631,7 +639,7 @@ function Projects() {
             as="button"
             className="ic"
             aria-label="Next project"
-            onClick={() => setI((i + 1) % L)}
+            onClick={() => go((i + 1) % L, 1)}
           >
             <ArrowRight size={20} />
           </Mag>
@@ -866,6 +874,12 @@ export default function App() {
       </AnimatePresence>
       <motion.div className="bar" style={{ scaleX: sx }} />
       <Cursor />
+
+      {ready && (
+        <Suspense fallback={null}>
+          <Scene3D />
+        </Suspense>
+      )}
 
       {/* Futuristic Neural Interface Navbar */}
       <Navbar dark={dark} toggleTheme={toggleTheme} />
