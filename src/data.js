@@ -11,7 +11,7 @@ export const tech = {
   Frontend: ["HTML5", "CSS3", "React.js", "Tailwind CSS"],
   Mobile: ["Flutter", "Dart"],
   "Backend & Database": ["Firebase", "Supabase", "MySQL", "Laravel"],
-  Tools: ["Git", "GitHub", "VS Code", "Figma"],
+  Tools: ["Vite", "GitHub", "VS Code", "Figma"],
 };
 export const projects = [
   {

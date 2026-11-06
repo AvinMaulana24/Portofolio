@@ -26,19 +26,34 @@ gsap.registerPlugin(ScrollTrigger);
 const Scene3D = lazy(() => import("./three/Scene3D"));
 const EASE = [0.2, 0.8, 0.2, 1];
 const CV = import.meta.env.BASE_URL + "cv.pdf";
+import {
+  SiJavascript,
+  SiPython,
+  SiPhp,
+  SiReact,
+  SiFlutter,
+  SiLaravel,
+  SiFirebase,
+  SiSupabase,
+  SiMysql,
+  SiVite,
+  SiGithub,
+} from "react-icons/si";
+import { FaJava } from "react-icons/fa";
+
 const TECH = [
-  ["JavaScript", "JS", "#d9a800"],
-  ["Python", "Py", "#3776ab"],
-  ["PHP", "php", "#777bb3"],
-  ["Java", "Jv", "#e76f00"],
-  ["React", "⚛", "#149eca"],
-  ["Flutter", "Fl", "#02569b"],
-  ["Laravel", "L", "#ff2d20"],
-  ["Firebase", "Fb", "#f57c00"],
-  ["Supabase", "Sb", "#2f9e6e"],
-  ["MySQL", "SQL", "#00618a"],
-  ["Git", "Git", "#f05033"],
-  ["GitHub", "GH", "#24292f"],
+  ["JavaScript", SiJavascript, "#d9a800"],
+  ["Python", SiPython, "#3776ab"],
+  ["PHP", SiPhp, "#777bb3"],
+  ["Java", FaJava, "#e76f00"],
+  ["React", SiReact, "#149eca"],
+  ["Flutter", SiFlutter, "#02569b"],
+  ["Laravel", SiLaravel, "#ff2d20"],
+  ["Firebase", SiFirebase, "#f57c00"],
+  ["Supabase", SiSupabase, "#2f9e6e"],
+  ["MySQL", SiMysql, "#00618a"],
+  ["Vite", SiVite, "#646cff"],
+  ["GitHub", SiGithub, "#6e7681"],
 ];
 const PROJECTS = [
   {
@@ -530,9 +545,17 @@ function Tech() {
           viewport={{ once: true, margin: "-60px" }}
           transition={{ staggerChildren: 0.06 }}
         >
-          {TECH.map(([n, l, c]) => (
+          {TECH.map(([n, Icon, c]) => (
             <Tilt key={n} className="tile" variants={V}>
-              <b style={{ background: c }}>{l}</b>
+              <b
+                style={{
+                  background: c,
+                  display: "grid",
+                  placeItems: "center",
+                }}
+              >
+                <Icon size={22} color="#fff" aria-hidden="true" />
+              </b>
               {n}
             </Tilt>
           ))}
