@@ -1,0 +1,122 @@
+/* =========================================================
+   CUSTOM CURSOR  (titik + cincin pengikut)
+   ========================================================= */
+
+/* Sembunyikan kursor bawaan hanya jika komponen aktif (perangkat mouse) */
+.has-xcur,
+.has-xcur * {
+  cursor: none !important;
+}
+
+.xcur {
+  position: fixed;
+  inset: 0;
+  z-index: 10000; /* di atas preloader & navigasi */
+  pointer-events: none;
+}
+
+.xcur-ring,
+.xcur-dot {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  will-change: transform;
+}
+
+.xcur[data-visible="true"] .xcur-ring,
+.xcur[data-visible="true"] .xcur-dot {
+  opacity: 1;
+}
+
+/* ---------- Titik ---------- */
+.xcur-dot-in {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #dcd7ff;
+  box-shadow: 0 0 12px rgba(164, 155, 238, 0.9);
+  transform: translate(-50%, -50%) scale(var(--s, 1));
+  transition:
+    width 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    height 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    border-radius 0.3s ease,
+    background 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.2s ease;
+}
+
+/* ---------- Cincin ---------- */
+.xcur-ring-in {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(220, 215, 255, 0.55);
+  background: rgba(164, 155, 238, 0);
+  transform: translate(-50%, -50%) scale(var(--s, 1));
+  transition:
+    width 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    height 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    background 0.3s ease,
+    border-color 0.3s ease,
+    opacity 0.25s ease,
+    transform 0.2s ease;
+}
+
+/* ---------- State: link / tombol ---------- */
+.xcur[data-state="link"] .xcur-ring-in {
+  width: 64px;
+  height: 64px;
+  border-color: rgba(255, 194, 26, 0.85);
+  background: rgba(164, 155, 238, 0.16);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+}
+.xcur[data-state="link"] .xcur-dot-in {
+  width: 5px;
+  height: 5px;
+  background: #ffc21a;
+  box-shadow: 0 0 10px rgba(255, 194, 26, 0.9);
+}
+
+/* ---------- State: kolom teks (bentuk caret) ---------- */
+.xcur[data-state="text"] .xcur-ring-in {
+  opacity: 0;
+  width: 10px;
+  height: 10px;
+}
+.xcur[data-state="text"] .xcur-dot-in {
+  width: 2px;
+  height: 24px;
+  border-radius: 2px;
+}
+
+/* ---------- State: ditekan ---------- */
+.xcur[data-down="true"] .xcur-ring-in {
+  --s: 0.82;
+}
+.xcur[data-down="true"] .xcur-dot-in {
+  --s: 1.5;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .xcur {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xcur-ring-in,
+  .xcur-dot-in {
+    transition-duration: 0.01s;
+  }
+}

@@ -1,0 +1,121 @@
+/* =========================================================
+   PANEL SHAPES: satu bentuk unik untuk setiap section
+   Hero      -> sudut cekung (scoop) + lengkung organik besar
+   About     -> daun (leaf): dua sudut besar bersilangan
+   Tech      -> potongan diagonal (chamfer) bergaya teknis
+   Projects  -> tab folder bertingkat
+   Journey   -> tepi bergerigi bulat (stamp) atas & bawah
+   Contact   -> gelembung percakapan: lengkung atas + ekor
+   ========================================================= */
+
+/* ---------- Dasar bersama ---------- */
+/* Selektor 1 class (sama seperti .concave-cutout lama) sehingga
+   aturan .panel / .panel.alt milikmu tetap menang untuk warna latar & teks. */
+.shape {
+  position: relative;
+  background: linear-gradient(var(--ang, 135deg), #39326d, #29264d);
+  border: 1px solid rgba(164, 155, 238, 0.2);
+}
+
+/* Bentuk yang dipotong (mask / clip-path) ikut memotong bayangan,
+   jadi bayangan & garis tepi dibuat pada section pembungkusnya. */
+section#home,
+section#skills,
+section#projects,
+section#journey {
+  filter: drop-shadow(0 24px 28px rgba(8, 9, 13, 0.6))
+    drop-shadow(0 0 1px rgba(164, 155, 238, 0.65));
+}
+
+/* ---------- 1. HERO: sudut kanan-bawah cekung ---------- */
+main .panel.shape-hero {
+  --ang: 135deg;
+  --scoop: clamp(40px, 5vw, 72px);
+  border-radius: clamp(56px, 9vw, 128px) clamp(24px, 3vw, 40px) 0
+    clamp(24px, 3vw, 40px);
+  -webkit-mask: radial-gradient(
+    circle var(--scoop) at 100% 100%,
+    #0000 98%,
+    #000
+  );
+  mask: radial-gradient(circle var(--scoop) at 100% 100%, #0000 98%, #000);
+}
+
+/* ---------- 2. ABOUT: bentuk daun ---------- */
+main .panel.shape-about {
+  --ang: 160deg;
+  --pr: clamp(40px, 8vw, 120px);
+  border-radius: var(--pr) 14px var(--pr) 14px;
+  box-shadow:
+    14px 22px 40px -10px rgba(8, 9, 13, 0.7),
+    inset 0 1px 0 rgba(220, 215, 255, 0.12);
+}
+
+/* ---------- 3. TECH: potongan diagonal kiri-atas & kanan-bawah ---------- */
+main .panel.shape-tech {
+  --ang: 120deg;
+  --c: clamp(24px, 4vw, 56px);
+  border-radius: 12px;
+  clip-path: polygon(
+    var(--c) 0,
+    100% 0,
+    100% calc(100% - var(--c)),
+    calc(100% - var(--c)) 100%,
+    0 100%,
+    0 var(--c)
+  );
+}
+
+/* ---------- 4. PROJECTS: tab folder ---------- */
+main .panel.shape-projects {
+  --ang: 150deg;
+  --t: clamp(28px, 4vw, 44px);
+  border-radius: 36px 0 36px 36px;
+  clip-path: polygon(
+    0 0,
+    52% 0,
+    calc(52% + var(--t)) var(--t),
+    100% var(--t),
+    100% 100%,
+    0 100%
+  );
+}
+
+/* ---------- 5. JOURNEY: tepi bergerigi bulat (stamp) ---------- */
+main .panel.shape-journey {
+  --ang: 145deg;
+  --b: clamp(10px, 1.4vw, 16px);
+  --p: calc(var(--b) * 2.4);
+  border-radius: 28px;
+  -webkit-mask:
+    radial-gradient(circle var(--b) at 50% 0, #0000 96%, #000) top / var(--p)
+      51% repeat-x,
+    radial-gradient(circle var(--b) at 50% 100%, #0000 96%, #000) bottom /
+      var(--p) 51% repeat-x;
+  mask:
+    radial-gradient(circle var(--b) at 50% 0, #0000 96%, #000) top / var(--p)
+      51% repeat-x,
+    radial-gradient(circle var(--b) at 50% 100%, #0000 96%, #000) bottom /
+      var(--p) 51% repeat-x;
+}
+
+/* ---------- 6. CONTACT: gelembung percakapan ---------- */
+main .panel.shape-contact {
+  --ang: 170deg;
+  --arch: clamp(64px, 11vw, 150px);
+  border-radius: var(--arch) var(--arch) 32px 32px;
+  box-shadow:
+    14px 22px 40px -10px rgba(8, 9, 13, 0.7),
+    inset 0 1px 0 rgba(220, 215, 255, 0.12);
+}
+main .panel.shape-contact::after {
+  content: "";
+  position: absolute;
+  left: clamp(32px, 9%, 96px);
+  bottom: -26px;
+  width: 48px;
+  height: 28px;
+  background: inherit;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  pointer-events: none;
+}

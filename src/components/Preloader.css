@@ -1,0 +1,239 @@
+/* =========================================================
+   EXCLUSIVE PRELOADER
+   ========================================================= */
+.xpre {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  color: #dcd7ff;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  background: radial-gradient(
+    ellipse 60% 50% at 50% 46%,
+    #2b2655 0%,
+    #141226 55%,
+    #08090d 100%
+  );
+}
+
+/* grid tipis, memudar ke tepi */
+.xpre::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(164, 155, 238, 0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(164, 155, 238, 0.09) 1px, transparent 1px);
+  background-size: 72px 72px;
+  -webkit-mask-image: radial-gradient(
+    ellipse 55% 50% at 50% 46%,
+    #000,
+    transparent 75%
+  );
+  mask-image: radial-gradient(
+    ellipse 55% 50% at 50% 46%,
+    #000,
+    transparent 75%
+  );
+  pointer-events: none;
+}
+
+.xpre-center {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 34px;
+  padding: 0 20px;
+  text-align: center;
+}
+
+/* ---------- Orb + cincin progres ---------- */
+.xpre-orb {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: clamp(132px, 38vw, 168px);
+  aspect-ratio: 1;
+}
+
+.xpre-dash {
+  position: absolute;
+  inset: -16px;
+  border-radius: 50%;
+  border: 1px dashed rgba(164, 155, 238, 0.35);
+  animation: xpre-spin 22s linear infinite;
+}
+
+.xpre-core {
+  position: absolute;
+  inset: 11%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 30% 24%,
+    #8279cf 0%,
+    #5a5394 52%,
+    #3e377a 100%
+  );
+  box-shadow:
+    12px 14px 30px rgba(8, 9, 13, 0.7),
+    -7px -7px 20px rgba(164, 155, 238, 0.28),
+    0 0 60px rgba(136, 128, 214, 0.45),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.28),
+    inset -4px -5px 12px rgba(41, 38, 77, 0.45);
+  animation: xpre-breathe 3.2s ease-in-out infinite;
+}
+
+.xpre-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+  overflow: visible;
+}
+.xpre-track {
+  fill: none;
+  stroke: rgba(220, 215, 255, 0.12);
+  stroke-width: 2;
+}
+.xpre-bar {
+  fill: none;
+  stroke: url(#xpreGrad);
+  stroke-width: 3;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 6px rgba(164, 155, 238, 0.8));
+}
+
+.xpre-face {
+  position: relative;
+  width: 56%;
+  height: 56%;
+  overflow: visible;
+  filter: drop-shadow(0 2px 8px rgba(41, 38, 77, 0.6));
+}
+.xpre-eye {
+  fill: #f1eeff;
+}
+.xpre-mouth {
+  fill: none;
+  stroke: #f1eeff;
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+.xpre-blink {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: xpre-blink 3.4s ease-in-out 1.4s infinite;
+}
+
+/* ---------- Teks ---------- */
+.xpre-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.xpre-name {
+  font-family: "Syne", sans-serif;
+  font-weight: 700;
+  font-size: clamp(0.95rem, 3.4vw, 1.1rem);
+  letter-spacing: 0.1em;
+  color: #dcd7ff;
+}
+.xpre-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 20px;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: rgba(220, 215, 255, 0.7);
+}
+.xpre-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ffc21a;
+  box-shadow: 0 0 8px rgba(255, 194, 26, 0.9);
+  animation: xpre-pulse 1.6s ease-in-out infinite;
+}
+
+/* ---------- Pojok ---------- */
+.xpre-count {
+  position: absolute;
+  left: clamp(20px, 4vw, 48px);
+  bottom: calc(clamp(18px, 4vh, 40px) + env(safe-area-inset-bottom, 0px));
+  font-family: "Syne", sans-serif;
+  font-weight: 800;
+  font-size: clamp(3rem, 10vw, 7.5rem);
+  line-height: 0.85;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  color: rgba(220, 215, 255, 0.92);
+}
+.xpre-count small {
+  margin-left: 4px;
+  font-size: 0.32em;
+  letter-spacing: 0;
+  color: #a49bee;
+}
+.xpre-note {
+  position: absolute;
+  right: clamp(20px, 4vw, 48px);
+  bottom: calc(clamp(22px, 4vh, 44px) + env(safe-area-inset-bottom, 0px));
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: rgba(220, 215, 255, 0.5);
+}
+
+@media (max-width: 480px) {
+  .xpre-note {
+    display: none;
+  }
+}
+
+@keyframes xpre-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes xpre-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+}
+@keyframes xpre-blink {
+  0%,
+  88%,
+  100% {
+    transform: scaleY(1);
+  }
+  93% {
+    transform: scaleY(0.1);
+  }
+}
+@keyframes xpre-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xpre-dash,
+  .xpre-core,
+  .xpre-blink,
+  .xpre-dot {
+    animation: none;
+  }
+}

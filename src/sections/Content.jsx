@@ -80,7 +80,7 @@ export function About() {
             <div className="border-l-2 border-[#FFC21A] pl-5">
               <p className="text-sm text-[#A49BEE]">Pendidikan</p>
               <p className="font-display text-2xl font-bold text-[#DCD7FF]">
-                Rekayasa Perangkat Lunak (RPL)
+                Rekayasa Perangkat Lunak
               </p>
               <p className="text-[#DCD7FF]">IPK 3.68</p>
             </div>

@@ -1,0 +1,614 @@
+/* =========================================================
+   FLOATING EXPANDABLE NAVIGATION DOCK
+   ========================================================= */
+.fnav {
+  --fn-bg: #625e91;
+  --fn-primary: #8880d6;
+  --fn-secondary: #a49bee;
+  --fn-light: #dcd7ff;
+  --fn-deep: #39326d;
+  --fn-text: #29264d;
+  --fn-sun: #ffc21a;
+  --fn-btn: 64px;
+
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: calc(30px + env(safe-area-inset-bottom, 0px));
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+.fnav *,
+.fnav *::before,
+.fnav *::after {
+  box-sizing: border-box;
+}
+
+.fnav-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: auto;
+  background:
+    radial-gradient(
+      ellipse 80% 55% at 50% 100%,
+      rgba(41, 38, 77, 0.55),
+      transparent 70%
+    ),
+    rgba(41, 38, 77, 0.18);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.fnav-stage {
+  position: relative;
+  z-index: 1;
+  width: var(--fn-btn);
+  height: var(--fn-btn);
+}
+
+/* ---------- Tombol utama ---------- */
+.fnav-float {
+  position: absolute;
+  inset: 0;
+  animation: fnav-bob 4.6s ease-in-out infinite;
+  pointer-events: auto;
+}
+
+.fnav[data-open="true"] .fnav-float,
+.fnav[data-open="true"] .fnav-shadow {
+  animation-play-state: paused;
+}
+
+.fnav-button {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--fn-light);
+  background: radial-gradient(
+    circle at 30% 24%,
+    #8279cf 0%,
+    #5a5394 52%,
+    #3e377a 100%
+  );
+  box-shadow:
+    10px 12px 26px rgba(41, 38, 77, 0.5),
+    -6px -6px 18px rgba(164, 155, 238, 0.3),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.28),
+    inset -3px -4px 9px rgba(41, 38, 77, 0.4);
+  transition:
+    background 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.4s ease,
+    box-shadow 0.5s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.fnav-button[data-open="true"] {
+  color: var(--fn-text);
+  background: radial-gradient(
+    circle at 30% 24%,
+    #f1eeff 0%,
+    #c4bcf7 55%,
+    #8880d6 100%
+  );
+  box-shadow:
+    8px 10px 22px rgba(41, 38, 77, 0.45),
+    -4px -4px 14px rgba(220, 215, 255, 0.35),
+    0 0 34px rgba(164, 155, 238, 0.7),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.7);
+}
+
+.fnav-button:focus-visible,
+.fnav-item:focus-visible,
+.fnav-pill:focus-visible {
+  outline: 2px solid var(--fn-sun);
+  outline-offset: 3px;
+}
+
+.fnav-glow {
+  position: absolute;
+  inset: -16px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(164, 155, 238, 0.55),
+    transparent 68%
+  );
+  animation: fnav-breathe 3.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.fnav[data-open="true"] .fnav-glow {
+  animation: none;
+  inset: -30px;
+  opacity: 1;
+  background: radial-gradient(
+    circle,
+    rgba(220, 215, 255, 0.6),
+    transparent 66%
+  );
+}
+
+.fnav-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: -16px;
+  width: 46px;
+  height: 10px;
+  margin-left: -23px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(41, 38, 77, 0.55), transparent 70%);
+  filter: blur(2px);
+  animation: fnav-shadow 4.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Cincin progres scroll */
+.fnav-ring {
+  position: absolute;
+  inset: -4px;
+  width: calc(100% + 8px);
+  height: calc(100% + 8px);
+  transform: rotate(-90deg);
+  pointer-events: none;
+}
+.fnav-ring-track {
+  fill: none;
+  stroke: rgba(220, 215, 255, 0.14);
+  stroke-width: 2;
+}
+.fnav-ring-bar {
+  fill: none;
+  stroke: var(--fn-secondary);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+.fnav-button[data-open="true"] .fnav-ring {
+  opacity: 0;
+}
+
+.fnav-status {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 6px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--fn-sun);
+  color: var(--fn-text);
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  box-shadow: 0 3px 10px rgba(41, 38, 77, 0.4);
+  pointer-events: none;
+}
+
+/* ---------- Menu (anchor di pusat tombol) ---------- */
+.fnav-menu {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  perspective: 900px;
+  pointer-events: none;
+}
+
+.fnav-dome {
+  position: absolute;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 70% 90% at 50% 100%,
+      rgba(164, 155, 238, 0.4),
+      transparent 70%
+    ),
+    linear-gradient(180deg, rgba(98, 94, 145, 0.62), rgba(57, 50, 109, 0.9));
+  border: 1px solid rgba(220, 215, 255, 0.18);
+  box-shadow:
+    14px 18px 40px rgba(41, 38, 77, 0.4),
+    -8px -8px 26px rgba(164, 155, 238, 0.14),
+    inset 0 1px 1px rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.fnav-arc {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+.fnav-arc-line {
+  fill: none;
+  stroke: rgba(220, 215, 255, 0.3);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+.fnav-arc-flow {
+  fill: none;
+  stroke: var(--fn-light);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-dasharray: 2 22;
+  opacity: 0.7;
+  animation: fnav-flow 2.4s linear infinite;
+}
+
+/* ---------- Item ---------- */
+.fnav-slot {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+}
+
+.fnav-item {
+  display: flex;
+  text-decoration: none;
+  color: var(--fn-light);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.fnav-item--arc,
+.fnav-item--extra {
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.fnav-orb {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--fn-light);
+  background: linear-gradient(145deg, #7770b8, #4c4586);
+  box-shadow:
+    6px 8px 16px rgba(41, 38, 77, 0.5),
+    -4px -4px 12px rgba(164, 155, 238, 0.24),
+    inset 1px 1px 1px rgba(255, 255, 255, 0.22);
+  transition:
+    background 0.35s ease,
+    color 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.fnav-orb--extra {
+  width: 46px;
+  height: 46px;
+  background: linear-gradient(145deg, #6a63ab, #433c7c);
+}
+
+.fnav-item:hover .fnav-orb {
+  background: linear-gradient(145deg, #948cdd, #5d559c);
+  box-shadow:
+    8px 12px 22px rgba(41, 38, 77, 0.5),
+    -4px -4px 12px rgba(164, 155, 238, 0.3),
+    0 0 20px rgba(164, 155, 238, 0.45),
+    inset 1px 1px 1px rgba(255, 255, 255, 0.3);
+}
+
+.fnav-item[data-active="true"] .fnav-orb {
+  color: var(--fn-text);
+  background: linear-gradient(145deg, #f1eeff, #a49bee);
+  box-shadow:
+    6px 8px 16px rgba(41, 38, 77, 0.45),
+    0 0 26px rgba(220, 215, 255, 0.65),
+    inset 1px 1px 1px rgba(255, 255, 255, 0.8);
+}
+
+/* nomor urut */
+.fnav-badge-num {
+  position: absolute;
+  top: -5px;
+  right: -7px;
+  min-width: 22px;
+  height: 20px;
+  padding: 0 5px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--fn-deep);
+  color: var(--fn-light);
+  border: 1px solid rgba(220, 215, 255, 0.22);
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+.fnav-item[data-active="true"] .fnav-badge-num {
+  background: var(--fn-sun);
+  color: var(--fn-text);
+  border-color: transparent;
+}
+
+.fnav-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: rgba(41, 38, 77, 0.62);
+  border: 1px solid rgba(220, 215, 255, 0.12);
+  color: var(--fn-light);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
+}
+.fnav-item[data-active="true"] .fnav-chip {
+  background: var(--fn-light);
+  color: var(--fn-text);
+}
+.fnav-item:hover .fnav-chip {
+  color: #fff;
+}
+.fnav-item[data-active="true"]:hover .fnav-chip {
+  color: var(--fn-text);
+}
+
+.fnav-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--fn-sun);
+  box-shadow: 0 0 6px rgba(255, 194, 26, 0.9);
+  animation: fnav-pulse 2s ease-in-out infinite;
+}
+
+/* ---------- Mobile sheet ---------- */
+.fnav-menu--mobile {
+  perspective: none;
+  --fn-sheet-w: min(92vw, 360px);
+}
+
+.fnav-sheet {
+  position: absolute;
+  left: calc(var(--fn-sheet-w) / -2);
+  bottom: 46px;
+  width: var(--fn-sheet-w);
+  max-height: calc(100dvh - 190px);
+  overflow-y: auto;
+  padding: 16px;
+  pointer-events: auto;
+  border-radius: 46px 30px 42px 38px / 34px 44px 38px 46px;
+  background:
+    radial-gradient(
+      ellipse 80% 60% at 50% 100%,
+      rgba(164, 155, 238, 0.35),
+      transparent 70%
+    ),
+    linear-gradient(180deg, rgba(98, 94, 145, 0.78), rgba(57, 50, 109, 0.95));
+  border: 1px solid rgba(220, 215, 255, 0.18);
+  box-shadow:
+    12px 16px 36px rgba(41, 38, 77, 0.45),
+    -6px -6px 22px rgba(164, 155, 238, 0.14),
+    inset 0 1px 1px rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  overscroll-behavior: contain;
+}
+
+.fnav-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.fnav-item--tile {
+  position: relative;
+  align-items: center;
+  gap: 10px;
+  min-height: 56px;
+  padding: 8px 12px 8px 8px;
+  background: linear-gradient(
+    145deg,
+    rgba(119, 112, 184, 0.55),
+    rgba(76, 69, 134, 0.7)
+  );
+  border: 1px solid rgba(220, 215, 255, 0.1);
+  box-shadow:
+    5px 6px 14px rgba(41, 38, 77, 0.35),
+    -3px -3px 10px rgba(164, 155, 238, 0.14),
+    inset 1px 1px 1px rgba(255, 255, 255, 0.14);
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
+}
+/* bentuk asimetris bergantian */
+.fnav-item--tile[data-parity="a"] {
+  border-radius: 30px 14px 30px 14px;
+}
+.fnav-item--tile[data-parity="b"] {
+  border-radius: 14px 30px 14px 30px;
+}
+
+.fnav-orb--tile {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  box-shadow:
+    3px 4px 9px rgba(41, 38, 77, 0.45),
+    inset 1px 1px 1px rgba(255, 255, 255, 0.22);
+}
+
+.fnav-tile-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.15;
+}
+.fnav-tile-num {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  opacity: 0.65;
+}
+.fnav-tile-name {
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.fnav-item--tile[data-active="true"] {
+  background: linear-gradient(145deg, #f1eeff, #b9b0f5);
+  color: var(--fn-text);
+  box-shadow:
+    5px 6px 14px rgba(41, 38, 77, 0.35),
+    0 0 20px rgba(220, 215, 255, 0.4);
+}
+.fnav-item--tile[data-active="true"] .fnav-orb {
+  background: linear-gradient(145deg, #8880d6, #5d559c);
+  color: var(--fn-light);
+}
+.fnav-dot--tile {
+  position: absolute;
+  top: 9px;
+  right: 11px;
+}
+
+.fnav-footer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+.fnav-footer > :only-child {
+  grid-column: 1 / -1;
+}
+
+.fnav-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid rgba(220, 215, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(41, 38, 77, 0.5);
+  color: var(--fn-light);
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    background 0.3s ease,
+    transform 0.2s ease;
+}
+.fnav-pill:active {
+  transform: scale(0.97);
+}
+.fnav-pill--primary {
+  background: var(--fn-light);
+  color: var(--fn-text);
+  border-color: transparent;
+}
+
+/* ---------- Responsif ---------- */
+@media (max-width: 767px) {
+  .fnav {
+    --fn-btn: 60px;
+    bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  }
+  .fnav-sheet {
+    bottom: 44px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1099px) {
+  .fnav-chip {
+    padding: 4px 9px;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+  }
+  .fnav-orb {
+    width: 52px;
+    height: 52px;
+  }
+}
+
+/* ---------- Keyframes ---------- */
+@keyframes fnav-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+@keyframes fnav-shadow {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(0.78);
+    opacity: 0.55;
+  }
+}
+@keyframes fnav-breathe {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.08);
+  }
+}
+@keyframes fnav-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+@keyframes fnav-flow {
+  to {
+    stroke-dashoffset: -48;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fnav-float,
+  .fnav-shadow,
+  .fnav-glow,
+  .fnav-dot,
+  .fnav-arc-flow {
+    animation: none !important;
+  }
+}

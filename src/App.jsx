@@ -8,6 +8,9 @@ import {
   useMotionValue,
 } from "framer-motion";
 import gsap from "gsap";
+import "./components/PanelShapes.css";
+import Cursor from "./components/Cursor";
+import Preloader from "./components/Preloader";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   ArrowRight,
@@ -160,60 +163,6 @@ const Split = ({ t, go, d = 0, hi }) => (
   </span>
 );
 
-/* ---------- global effects ---------- */
-function Preloader({ done }) {
-  const [n, setN] = useState(0);
-  useEffect(() => {
-    const i = setInterval(() => setN((v) => Math.min(100, v + 4)), 40);
-    return () => clearInterval(i);
-  }, []);
-  useEffect(() => {
-    if (n === 100) {
-      const t = setTimeout(done, 300);
-      return () => clearTimeout(t);
-    }
-  }, [n, done]);
-  return (
-    <motion.div
-      className="pre"
-      exit={{
-        y: "-100%",
-        borderBottomLeftRadius: "50% 18%",
-        borderBottomRightRadius: "50% 18%",
-      }}
-      transition={{ duration: 0.9, ease: [0.7, 0, 0.2, 1] }}
-    >
-      <div className="disp">{n}</div>
-      <span>LOADING...</span>
-    </motion.div>
-  );
-}
-
-function Cursor() {
-  const r = useRef();
-  useEffect(() => {
-    if (!matchMedia("(hover:hover)").matches) return;
-    const x = gsap.quickTo(r.current, "x", { duration: 0.45, ease: "power3" }),
-      y = gsap.quickTo(r.current, "y", { duration: 0.45, ease: "power3" });
-    const mv = (e) => {
-      x(e.clientX);
-      y(e.clientY);
-    };
-    const ov = (e) =>
-      r.current.classList.toggle(
-        "big",
-        !!e.target.closest("a,button,.tile,.th"),
-      );
-    addEventListener("mousemove", mv);
-    addEventListener("mouseover", ov);
-    return () => {
-      removeEventListener("mousemove", mv);
-      removeEventListener("mouseover", ov);
-    };
-  }, []);
-  return <div ref={r} className="cur" aria-hidden="true" />;
-}
-
 /* ---------- SVG Futuristic Background Component (FIX TOTAL) ---------- */
 function SvgBackground() {
   const content = (
@@ -346,8 +295,12 @@ function Hero({ go }) {
     transition: { delay: d, duration: 0.8, ease: EASE },
   });
   return (
-    <section id="home" ref={ref} style={{ paddingTop: "120px" }}>
-      <div className="panel hero concave-cutout p-8 md:p-12">
+    <section
+      id="home"
+      ref={ref}
+      style={{ paddingTop: "clamp(24px, 5vh, 48px)" }}
+    >
+      <div className="panel hero shape shape-hero p-8 md:p-12">
         <div>
           <motion.div className="eyebrow" {...fade(0.1)}>
             CREATIVE DEVELOPER PORTFOLIO
@@ -474,7 +427,7 @@ function Hero({ go }) {
 function About() {
   return (
     <section id="about">
-      <R className="panel alt about concave-cutout p-8 md:p-12">
+      <R className="panel alt about shape shape-about p-8 md:p-12">
         <div>
           <div className="eyebrow">WHO I AM</div>
           <h2 className="disp">
@@ -527,7 +480,7 @@ function About() {
             <br />
             KEEP CREATING.
           </div>
-          <small>Rekayasa Perangkat Lunak (RPL) · IPK 3.68</small>
+          <small>Rekayasa Perangkat Lunak · IPK 3.68</small>
         </motion.div>
       </R>
     </section>
@@ -550,7 +503,7 @@ function Tech() {
 
   return (
     <section id="skills">
-      <R className="panel tech concave-cutout p-8 md:p-12">
+      <R className="panel tech shape shape-tech p-8 md:p-12">
         <div className="eyebrow">STACK</div>
         <h2 className="disp">
           TECHNOLOGIES I <span className="hi">WORK WITH.</span>
@@ -594,7 +547,7 @@ function Projects() {
     L = PROJECTS.length;
   return (
     <section id="projects">
-      <R className="panel alt concave-cutout p-8 md:p-12">
+      <R className="panel alt shape shape-projects p-8 md:p-12">
         <div className="eyebrow">SELECTED WORK</div>
         <h2
           className="disp"
@@ -723,7 +676,7 @@ function Journey() {
   }, []);
   return (
     <section id="journey" ref={ref}>
-      <div className="panel concave-cutout p-8 md:p-12">
+      <div className="panel shape shape-journey p-8 md:p-12">
         <div className="eyebrow">TIMELINE</div>
         <h2
           className="disp"
@@ -757,7 +710,7 @@ function Contact() {
   const [sent, setSent] = useState(false);
   return (
     <section id="contact">
-      <R className="panel alt contact concave-cutout p-8 md:p-12">
+      <R className="panel alt contact shape shape-contact p-8 md:p-12">
         <div>
           <div className="eyebrow">CONTACT</div>
           <h2 className="disp">
@@ -926,7 +879,7 @@ export default function App() {
         <Contact />
       </main>
 
-      <footer className="relative z-20 border-t border-[#8880D6]/20 bg-[#08090d]/90 backdrop-blur-md pt-16 pb-12 mt-20">
+      <footer className="relative z-20 border-t border-[#8880D6]/20 bg-[#08090d]/90 backdrop-blur-md pt-16 pb-28 mt-20">
         <div className="wrap max-w-7xl mx-auto px-6 md:px-10 flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="flex flex-col items-center md:items-start gap-2">
             <p className="text-sm text-[#A49BEE]/80 font-mono text-center">
