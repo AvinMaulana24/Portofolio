@@ -42,11 +42,12 @@ function makeChevron() {
 
 /**
  * Objek utama: "developer sculpture"
- *  - inti kristal berfaset (iridescent) + cangkang translusen
+ *  - inti kristal berfaset (iridescent di desktop) + cangkang translusen (desktop)
  *  - tiga cincin giroskop berbahan logam satin
  *  - tanda < > yang mengorbit dan selalu menghadap kamera
  *  - satelit kecil (muncul bertahap di section Skills)
  * Geometri dan material dibuat sekali dan dipakai ulang.
+ * Tablet/HP memakai material ringan (tanpa clearcoat/iridescence/transparansi).
  */
 export default function FloatingObject({ journey, tier, reduced }) {
   const root = useRef();
@@ -60,13 +61,14 @@ export default function FloatingObject({ journey, tier, reduced }) {
   const acc = useRef(0);
 
   const hi = tier === "desktop";
+  const lite = !hi;
   const count = SAT_COUNT[tier];
 
   const geo = useMemo(() => {
     const seg = hi ? [16, 128] : [8, 64];
     return {
       core: new THREE.IcosahedronGeometry(0.62, 1),
-      shell: new THREE.IcosahedronGeometry(0.8, hi ? 2 : 1),
+      shell: new THREE.IcosahedronGeometry(0.8, 2),
       r1: new THREE.TorusGeometry(1.0, 0.022, seg[0], seg[1]),
       r2: new THREE.TorusGeometry(1.22, 0.03, seg[0], seg[1]),
       r3: new THREE.TorusGeometry(1.45, 0.016, seg[0], seg[1]),
@@ -80,23 +82,29 @@ export default function FloatingObject({ journey, tier, reduced }) {
 
   const mats = useMemo(
     () => ({
-      core: new THREE.MeshPhysicalMaterial({
-        color: "#8880D6",
-        metalness: 0.55,
-        roughness: 0.28,
-        clearcoat: 0.8,
-        clearcoatRoughness: 0.25,
-        iridescence: 0.6,
-        iridescenceIOR: 1.35,
-        iridescenceThicknessRange: [120, 420],
-        flatShading: true,
-      }),
+      core: lite
+        ? new THREE.MeshStandardMaterial({
+            color: "#8880D6",
+            metalness: 0.55,
+            roughness: 0.3,
+            flatShading: true,
+          })
+        : new THREE.MeshPhysicalMaterial({
+            color: "#8880D6",
+            metalness: 0.55,
+            roughness: 0.28,
+            clearcoat: 0.4,
+            clearcoatRoughness: 0.25,
+            iridescence: 0.5,
+            iridescenceIOR: 1.35,
+            iridescenceThicknessRange: [120, 420],
+            flatShading: true,
+          }),
       shell: new THREE.MeshPhysicalMaterial({
         color: "#DCD7FF",
         transparent: true,
         opacity: 0.14,
         roughness: 0.05,
-        clearcoat: 1,
         depthWrite: false,
       }),
       r1: new THREE.MeshStandardMaterial({
@@ -114,20 +122,26 @@ export default function FloatingObject({ journey, tier, reduced }) {
         metalness: 0.8,
         roughness: 0.35,
       }),
-      chev: new THREE.MeshPhysicalMaterial({
-        color: "#DCD7FF",
-        metalness: 0.15,
-        roughness: 0.25,
-        clearcoat: 1,
-        clearcoatRoughness: 0.2,
-      }),
+      chev: lite
+        ? new THREE.MeshStandardMaterial({
+            color: "#DCD7FF",
+            metalness: 0.15,
+            roughness: 0.3,
+          })
+        : new THREE.MeshPhysicalMaterial({
+            color: "#DCD7FF",
+            metalness: 0.15,
+            roughness: 0.25,
+            clearcoat: 0.6,
+            clearcoatRoughness: 0.2,
+          }),
       sat: new THREE.MeshStandardMaterial({
         color: "#A49BEE",
         metalness: 0.7,
         roughness: 0.3,
       }),
     }),
-    [],
+    [lite],
   );
 
   useEffect(
@@ -270,39 +284,17 @@ export default function FloatingObject({ journey, tier, reduced }) {
   return (
     <group ref={root}>
       <group ref={spinner}>
-        <mesh
-          geometry={geo.core}
-          material={mats.core}
-          castShadow
-          receiveShadow
-        />
-        <mesh geometry={geo.shell} material={mats.shell} />
-        <mesh
-          ref={r1}
-          geometry={geo.r1}
-          material={mats.r1}
-          castShadow
-          receiveShadow
-        />
-        <mesh
-          ref={r2}
-          geometry={geo.r2}
-          material={mats.r2}
-          castShadow
-          receiveShadow
-        />
-        <mesh
-          ref={r3}
-          geometry={geo.r3}
-          material={mats.r3}
-          castShadow
-          receiveShadow
-        />
+        <mesh geometry={geo.core} material={mats.core} />
+        {/* cangkang transparan hanya di desktop: lapisan tembus pandang mahal di GPU HP */}
+        {hi && <mesh geometry={geo.shell} material={mats.shell} />}
+        <mesh ref={r1} geometry={geo.r1} material={mats.r1} />
+        <mesh ref={r2} geometry={geo.r2} material={mats.r2} />
+        <mesh ref={r3} geometry={geo.r3} material={mats.r3} />
         <group position={[-1.75, 0, 0]}>
-          <mesh ref={cL} geometry={geo.chev} material={mats.chev} castShadow />
+          <mesh ref={cL} geometry={geo.chev} material={mats.chev} />
         </group>
         <group position={[1.75, 0, 0]} scale={[-1, 1, 1]}>
-          <mesh ref={cR} geometry={geo.chev} material={mats.chev} castShadow />
+          <mesh ref={cR} geometry={geo.chev} material={mats.chev} />
         </group>
       </group>
       {SATS.slice(0, count).map((s, i) => (
@@ -311,7 +303,6 @@ export default function FloatingObject({ journey, tier, reduced }) {
           ref={(el) => (sats.current[i] = el)}
           geometry={geo[s[0]]}
           material={mats.sat}
-          castShadow
         />
       ))}
     </group>

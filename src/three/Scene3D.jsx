@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
   Environment,
   Lightformer,
@@ -15,7 +15,8 @@ import {
   getConfig,
 } from "./SectionAnimationConfig";
 
-const DPR = { desktop: [1, 1.75], tablet: [1, 1.5], mobile: [1, 1.25] };
+const DPR = { desktop: [1, 1.25], tablet: [1, 1.25], mobile: [1, 1] };
+const MOBILE_FPS = 30;
 
 const tierOf = () =>
   window.innerWidth < 768
@@ -50,14 +51,40 @@ function useReducedMotion() {
 function hasWebGL() {
   try {
     const c = document.createElement("canvas");
-    return !!(c.getContext("webgl2") || c.getContext("webgl"));
+    const gl = c.getContext("webgl2") || c.getContext("webgl");
+    if (!gl) return false;
+    // lepas konteks uji agar tidak menghabiskan jatah konteks WebGL di HP
+    gl.getExtension("WEBGL_lose_context")?.loseContext();
+    return true;
   } catch {
     return false;
   }
 }
 
+/**
+ * Di HP, render dibatasi ~30 fps: frameloop="demand" + pemicu berkala.
+ * WAJIB dipasang di dalam <Canvas> saat frameloop="demand".
+ */
+function Throttle({ fps = MOBILE_FPS }) {
+  const invalidate = useThree((s) => s.invalidate);
+  useEffect(() => {
+    let last = 0;
+    let raf;
+    const loop = (t) => {
+      raf = requestAnimationFrame(loop);
+      if (t - last >= 1000 / fps) {
+        last = t;
+        invalidate();
+      }
+    };
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+  }, [invalidate, fps]);
+  return null;
+}
+
 /** Intensitas cahaya mengikuti pose.light (naik halus menuju Contact). */
-function Lights({ journey, shadows }) {
+function Lights({ journey, tier }) {
   const amb = useRef();
   const key = useRef();
   const rim = useRef();
@@ -70,28 +97,22 @@ function Lights({ journey, shadows }) {
   return (
     <>
       <ambientLight ref={amb} color="#DCD7FF" />
-      <directionalLight
-        ref={key}
-        position={[4, 5, 6]}
-        castShadow={shadows}
-        shadow-mapSize={[1024, 1024]}
-        shadow-bias={-0.0005}
-        shadow-normalBias={0.02}
-      />
-      <pointLight ref={rim} position={[-5, -2, 4]} color="#A49BEE" />
+      <directionalLight ref={key} position={[4, 5, 6]} />
+      {/* lampu titik dilewati di HP/tablet untuk meringankan GPU */}
+      {tier === "desktop" && (
+        <pointLight ref={rim} position={[-5, -2, 4]} color="#A49BEE" />
+      )}
     </>
   );
 }
 
 /** Environment prosedural (tanpa unduh HDR): softbox lavender. */
-function Studio({ low }) {
+function Studio({ tier, low }) {
   const look = (self) => self.lookAt(0, 0, 0);
+  const resolution =
+    tier === "mobile" ? 64 : low || tier === "tablet" ? 128 : 256;
   return (
-    <Environment
-      resolution={low ? 128 : 256}
-      frames={1}
-      environmentIntensity={0.9}
-    >
+    <Environment resolution={resolution} frames={1} environmentIntensity={0.9}>
       <Lightformer
         form="rect"
         intensity={2.2}
@@ -135,7 +156,6 @@ export default function Scene3D() {
   const [active, setActive] = useState(true);
   const [webgl] = useState(hasWebGL);
   const journey = useRef(null);
-  const DPR = { desktop: [1, 1.25], tablet: [1, 1.25], mobile: [1, 1] };
   if (!journey.current) journey.current = createJourneyState(getConfig(tier));
 
   // jeda render ketika tab tidak aktif
@@ -154,14 +174,18 @@ export default function Scene3D() {
 
   if (!webgl) return null; // fallback: ilustrasi SVG lama tetap tampil
 
-  const shadows = false;
+  const mobile = tier === "mobile";
 
   return (
     <div
       aria-hidden="true"
       style={{
         position: "fixed",
-        inset: 0,
+        top: 0,
+        left: 0,
+        width: "100%",
+        // tinggi layar terbesar: kanvas tidak di-resize saat bilah alamat HP naik/turun
+        height: "100lvh",
         zIndex: CANVAS_Z_INDEX,
         pointerEvents: "none",
       }}
@@ -172,9 +196,8 @@ export default function Scene3D() {
         reduced={reduced}
       />
       <Canvas
-        frameloop={active ? "always" : "never"}
+        frameloop={!active ? "never" : mobile ? "demand" : "always"}
         dpr={low ? 1 : DPR[tier]}
-        shadows={shadows}
         camera={{ fov: 40, near: 0.1, far: 50, position: [0, 0, BASE_CAM_Z] }}
         gl={{
           alpha: true,
@@ -187,9 +210,10 @@ export default function Scene3D() {
           document.documentElement.dataset.scene3d = "on";
         }}
       >
+        {mobile && active && <Throttle fps={MOBILE_FPS} />}
         <PerformanceMonitor onDecline={() => setLow(true)} />
-        <Studio low={low} />
-        <Lights journey={journey} shadows={shadows} />
+        <Studio tier={tier} low={low} />
+        <Lights journey={journey} tier={tier} />
         <CameraController journey={journey} />
         <FloatingObject journey={journey} tier={tier} reduced={reduced} />
       </Canvas>

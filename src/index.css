@@ -209,3 +209,12 @@ html[data-scene3d="on"] #home .stage > svg,
 html[data-scene3d="on"] #contact .stage > svg {
   visibility: hidden;
 }
+@media (max-width: 767px) {
+  body::after {
+    display: none;
+  }
+  .svg-cyber-grid,
+  .svg-scanner-beam {
+    animation: none;
+  }
+}
