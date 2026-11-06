@@ -135,6 +135,7 @@ export default function Scene3D() {
   const [active, setActive] = useState(true);
   const [webgl] = useState(hasWebGL);
   const journey = useRef(null);
+  const DPR = { desktop: [1, 1.25], tablet: [1, 1.25], mobile: [1, 1] };
   if (!journey.current) journey.current = createJourneyState(getConfig(tier));
 
   // jeda render ketika tab tidak aktif
@@ -153,7 +154,7 @@ export default function Scene3D() {
 
   if (!webgl) return null; // fallback: ilustrasi SVG lama tetap tampil
 
-  const shadows = tier === "desktop" && !low;
+  const shadows = false;
 
   return (
     <div
@@ -177,7 +178,7 @@ export default function Scene3D() {
         camera={{ fov: 40, near: 0.1, far: 50, position: [0, 0, BASE_CAM_Z] }}
         gl={{
           alpha: true,
-          antialias: tier === "desktop",
+          antialias: false,
           powerPreference: "high-performance",
         }}
         style={{ pointerEvents: "none" }}
