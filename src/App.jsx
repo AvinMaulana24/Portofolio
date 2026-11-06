@@ -8,7 +8,7 @@ import {
   useMotionValue,
 } from "framer-motion";
 import gsap from "gsap";
-import "./components/PanelShapes.css";
+import "./components/Panelshapes.css";
 import Cursor from "./components/Cursor";
 import Preloader from "./components/Preloader";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
