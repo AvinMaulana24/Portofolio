@@ -77,6 +77,15 @@ export function About() {
             delay={0.15}
             className="lg:col-span-5 lg:col-start-8 p-6 bg-[#29264D]/50 rounded-[40px_20px_50px_30px] border border-[#8880D6]/30 shadow-2xl"
           >
+            <div className="relative mb-8 aspect-[4/3] w-full overflow-hidden rounded-[32px_16px_40px_24px] border border-[#8880D6]/40 shadow-2xl">
+              <img
+                src={import.meta.env.BASE_URL + "foto.jpg"}
+                alt="Foto Muhammad Avin Maulana"
+                width="800"
+                height="1000"
+                className="h-full w-full object-cover object-top"
+              />
+            </div>
             <div className="border-l-2 border-[#FFC21A] pl-5">
               <p className="text-sm text-[#A49BEE]">Pendidikan</p>
               <p className="font-display text-2xl font-bold text-[#DCD7FF]">

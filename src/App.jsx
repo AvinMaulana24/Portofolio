@@ -9,6 +9,7 @@ import {
 } from "framer-motion";
 import gsap from "gsap";
 import "./components/Panelshapes.css";
+import emailjs from "@emailjs/browser";
 import Cursor from "./components/Cursor";
 import Preloader from "./components/Preloader";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -25,7 +26,8 @@ gsap.registerPlugin(ScrollTrigger);
 
 const Scene3D = lazy(() => import("./three/Scene3D"));
 const EASE = [0.2, 0.8, 0.2, 1];
-const CV = import.meta.env.BASE_URL + "cv.pdf";
+const CV =
+  import.meta.env.BASE_URL + "CV_Muhammad_Avin_Maulana_IT Programmer.pdf";
 import {
   SiJavascript,
   SiPython,
@@ -338,9 +340,11 @@ function Hero({ go }) {
             Software Developer | Creative Programmer
           </motion.div>
           <motion.p className="d" {...fade(1.4)}>
-            Saya merupakan lulusan Rekayasa Perangkat Lunak yang memiliki
-            ketertarikan dalam membangun aplikasi, mengembangkan teknologi, dan
-            menciptakan solusi digital yang inovatif.
+            I am a Software Engineering graduate with a solid understanding of
+            application development, programming, and database management. I
+            have experience working with various programming technologies and am
+            able to work collaboratively, adaptively, and responsibly to
+            complete assigned tasks.
           </motion.p>
           <motion.div className="btns" {...fade(1.55)}>
             <Mag className="dark" href="#projects">
@@ -450,11 +454,17 @@ function About() {
             About <span className="hi">Me.</span>
           </h2>
           <p>
-            I’m a Software Engineering graduate who loves turning rough ideas
-            into polished apps, games and web products.
+            I'm a Software Engineering graduate with a strong interest in
+            software development, web technologies, and building practical
+            digital solutions. I enjoy exploring new technologies and
+            transforming ideas into functional, user-focused applications.
           </p>
-          <p>My philosophy: learn in public, ship small, refine forever.</p>
+          <p>
+            My philosophy: keep learning, build with purpose, and continuously
+            improve.
+          </p>
         </div>
+
         <div className="frame">
           <motion.div
             className="in"
@@ -463,23 +473,20 @@ function About() {
             viewport={{ once: true }}
             transition={{ duration: 1.1, ease: [0.7, 0, 0.2, 1] }}
           >
-            <svg
-              viewBox="0 0 200 250"
-              width="80%"
-              aria-label="Portrait placeholder"
-            >
-              <circle cx="100" cy="92" r="46" fill="#39326D" />
-              <path d="M20 250 q10 -100 80 -100 q70 0 80 100z" fill="#8880D6" />
-              <rect
-                x="62"
-                y="82"
-                width="76"
-                height="26"
-                rx="13"
-                fill="#DCD7FF"
-                opacity=".9"
-              />
-            </svg>
+            <img
+              src={import.meta.env.BASE_URL + "foto.jpg"}
+              alt="Foto Muhammad Avin Maulana"
+              width="800"
+              height="1000"
+              style={{
+                width: "75%",
+                aspectRatio: "4 / 5",
+                objectFit: "contain",
+                objectPosition: "top",
+                borderRadius: "40px 20px 50px 30px",
+                display: "block",
+              }}
+            />
           </motion.div>
         </div>
         <motion.div
@@ -738,7 +745,32 @@ function Journey() {
 }
 
 function Contact() {
-  const [sent, setSent] = useState(false);
+  const [status, setStatus] = useState("idle"); // idle | loading | ok | err
+
+  const send = async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const d = new FormData(form);
+    setStatus("loading");
+    try {
+      const E = import.meta.env;
+      await emailjs.send(
+        E.VITE_EMAILJS_SERVICE_ID,
+        E.VITE_EMAILJS_TEMPLATE_ID,
+        {
+          from_name: d.get("name"),
+          reply_to: d.get("email"),
+          subject: d.get("subject"),
+          message: d.get("message"),
+        },
+        { publicKey: E.VITE_EMAILJS_PUBLIC_KEY },
+      );
+      setStatus("ok");
+      form.reset();
+    } catch {
+      setStatus("err");
+    }
+  };
   return (
     <section id="contact">
       <R className="panel alt contact shape shape-contact p-8 md:p-12">
@@ -750,13 +782,7 @@ function Contact() {
           <p className="d">
             Have an idea or project? Let’s turn it into reality.
           </p>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              setSent(true);
-              e.target.reset();
-            }}
-          >
+          <form onSubmit={send}>
             <div className="r2">
               <input
                 required
@@ -793,15 +819,16 @@ function Contact() {
               </Mag>
             </div>
             <AnimatePresence>
-              {sent && (
+              {(status === "ok" || status === "err") && (
                 <motion.div
                   id="ok"
                   role="status"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                 >
-                  Thanks! Connect a form service (Formspree, EmailJS) to deliver
-                  messages.
+                  {status === "ok"
+                    ? "Thanks! Pesan terkirim, saya akan membalas lewat email."
+                    : "Pesan gagal terkirim. Coba lagi atau hubungi lewat email langsung."}
                 </motion.div>
               )}
             </AnimatePresence>
