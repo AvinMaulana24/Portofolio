@@ -191,7 +191,8 @@ export default function FloatingNavigation({ dark, toggleTheme }) {
     NAV_ITEMS.findIndex((i) => i.id === active),
   );
   const activeNum = String(activeIndex + 1).padStart(2, "0");
-  const resumeHref = import.meta.env.BASE_URL + "cv.pdf";
+  const resumeHref =
+    import.meta.env.BASE_URL + "CV_Muhammad_Avin_Maulana_IT Programmer.pdf";
 
   return (
     <div className="fnav" data-open={open} data-mode={mode}>
